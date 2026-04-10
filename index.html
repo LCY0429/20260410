@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 學習儀表板 - 413730077</title>
+    <style>
+        :root {
+            --primary-color: #42b883;
+            --secondary-color: #35495e;
+            --sidebar-bg: #ffffff;
+            --main-bg: #f8fafc;
+            --text-color: #2c3e50;
+            --accent-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 側邊欄樣式 */
+        aside {
+            width: 320px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+
+        header {
+            padding: 30px 25px;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .student-id {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* 選單區域 */
+        nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .menu-item.active {
+            background: #ecfdf5;
+            color: var(--primary-color);
+            border-color: #bbf7d0;
+            box-shadow: 0 2px 4px rgba(66, 184, 131, 0.1);
+        }
+
+        .menu-item::before {
+            content: "📄";
+            margin-right: 12px;
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        .menu-item.special::before {
+            content: "📝";
+        }
+
+        /* 主內容區域 (Iframe) */
+        main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background: var(--main-bg);
+            padding: 20px;
+        }
+
+        .iframe-container {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--accent-color);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" style="display: flex; width: 100%;">
+        <!-- 左側選單 -->
+        <aside>
+            <header>
+                <h1>Vue.js 學習導覽</h1>
+                <div class="student-id">STUDENT ID: 413730077</div>
+            </header>
+            <nav>
+                <ul>
+                    <li v-for="(item, index) in menuItems" :key="index">
+                        <a 
+                            class="menu-item" 
+                            :class="{ active: currentUrl === item.url, special: index === 8 }"
+                            @click.prevent="currentUrl = item.url"
+                        >
+                            {{ item.title }}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 右側內容 -->
+        <main>
+            <div class="iframe-container">
+                <iframe v-if="currentUrl" :src="currentUrl"></iframe>
+                <div v-else class="placeholder">
+                    <span style="font-size: 4rem; margin-bottom: 20px;">🚀</span>
+                    <h2>歡迎來到 Vue.js 練習場</h2>
+                    <p>請從左側選單選擇一個練習單元開始</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const currentUrl = ref('');
+                const menuItems = [
+                    { title: "練習 1：基本計數器", url: "ex1/index.html" },
+                    { title: "練習 2：資料屬性 (Data)", url: "ex2/index.html" },
+                    { title: "練習 3：方法與事件", url: "ex3/index.html" },
+                    { title: "練習 4：雙向綁定", url: "ex4/index.html" },
+                    { title: "練習 5：條件渲染", url: "ex5/index.html" },
+                    { title: "練習 6：列表渲染", url: "ex6/index.html" },
+                    { title: "練習 7：計算屬性", url: "ex7/index.html" },
+                    { title: "練習 8：樣式與 Class", url: "ex8/index.html" },
+                    { title: "練習 9：綜合應用 - 待辦清單", url: "ex9/index.html" }
+                ];
+
+                return {
+                    currentUrl,
+                    menuItems
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
